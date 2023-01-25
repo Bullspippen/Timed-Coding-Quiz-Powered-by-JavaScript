@@ -138,18 +138,6 @@ button[disabled] {
     font-size: 0.8rem;
   }
 }
-Footer
-© 2023 GitHub, Inc.
-Footer navigation
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
-Module-3---JavaScript-Challenge---Password-Generator/style.css at main · Bullspippen/Module-3---JavaScript-Challenge---Password-Generator
+
+
+.hide{display: none;}

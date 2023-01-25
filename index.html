@@ -7,70 +7,37 @@
     <link rel="stylesheet" href="./assets/style.css"/>
     <title>Timed Code Quiz</title>
 
-<div class="start>btn"><button>Start Quiz</button></div>
-
+    
 </head>
 <body>
-    <div id="timed-quiz-container"></div>
     <h1>Timed Quiz Game</h1>
-    <div id="timed-quiz-header">
-        <div id="timer">
+    <div id="timed-quiz-container">
+        <div id="timer"></div>
+            
+        <section id="welcomePage">
+            <!-- welcome page -->
+            <!-- start button -->
+            <div class="start_btn">
+                <button onclick="startQuiz()">Start Quiz</button>
+            </div>
+        </section>
 
+        <section id="questionsPage" class="hide">
+            <h2 id="questions"></h2>
+            <ul id="answers"></ul>
+        </section>
 
+        <section id="scorePage" class="hide">
+            <div>Game Over!</div>
+            <div>Your Final Score Is: <span id="score"></span></div>
 
-        <div id="score">
-
-
-
-
-        <div id="question-1" class="questions">
-            <h2>Question 1</h2>
-        <!--Insert Answers to Question 1 Need to be more Speific-->
-            <input type="radio" name="question-1">
-            <input type="radio" name="question-1">
-            <input type="radio" name="question-1">
-            <input type="radio" name="question-1">
-        </div>
-        <div id="question-2" class="questions">
-            <h2>Question 1</h2>
-        <!--Insert Answers to Question 2-->
-            <input type="radio" name="question-2">
-            <input type="radio" name="question-2">
-            <input type="radio" name="question-2">
-            <input type="radio" name="question-2">
-        </div>
-        <div id="question-3" class="questions">
-            <h2>Question 1</h2>
-        <!--Insert Answers to Question 3 Need to be more Speific-->
-            <input type="radio" name="question-3">
-            <input type="radio" name="question-3">
-            <input type="radio" name="question-3">
-            <input type="radio" name="question-3">
-        </div>
-        <div id="question-4" class="questions">
-            <h2>Question 1</h2>
-        <!--Insert Answers to Question 4 Need to be more Speific-->
-            <input type="radio" name="question-4">
-            <input type="radio" name="question-4">
-            <input type="radio" name="question-4">
-            <input type="radio" name="question-4">
-        </div>
-        <div id="question-5" class="questions">
-            <h2>Question 1</h2>
-        <!--Insert Answers to Question 5 Need to be more Speific-->
-            <input type="radio" name="question-5">
-            <input type="radio" name="question-5">
-            <input type="radio" name="question-5">
-            <input type="radio" name="question-5">
-        </div>
-        </div>
-        </div>
-
-        <!--Start Timed Quiz Game Button - That Would Iniate the Timer - Would Need a Button to Click on Answer within Mutliple Choice Questions, Submit Answer Button
-        Would that then move the game forward to the next question or would there need to be a Move Forward Button??-->
+            <div>Please Enter Your Initials</div>
+            <input type="text" id="inputInitials" />
+            <button onclick="submitInitials()">Submit</button>
+        </section>
 
     </div>
-    <div></div>
+
     <div></div>
     <script src="./assets/script.js"></script>
 </body>
