@@ -1,4 +1,4 @@
-# Module-4---Timed-Code-Quiz-Powered-by-JavaScript
+Timed-Code-Quiz-Powered-by-JavaScript
 
 ## Your Task
 
