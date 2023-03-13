@@ -1,23 +1,24 @@
+function hideElements(...elements) {
+  elements.forEach((element) => {
+    element.style.display = "none";
+  });
+}
+
+function showElements(...elements) {
+  elements.forEach((element) => {
+    element.style.display = "block";
+  });
+}
 const questionsArray = [
   {
-    question: "Which of the following is not javascript data types?",
-    answers: [
-      "Null type",
-      "Undefined type",
-      "Number type",
-      "All of the above",
-    ],
-    correctAnswer: "All of the above",
+    question: "Which of the following is not a JavaScript data type?",
+    answers: ["Null type", "Undefined type", "Number type", "Boolean type"],
+    correctAnswer: "Boolean type",
   },
   {
     question:
       "Which of the following can be used to call a JavaScript Code Snippet?",
-    answers: [
-      "Function/Method",
-      "Preprocessor",
-      "Triggering Event",
-      "RMI",
-    ],
+    answers: ["Function/Method", "Preprocessor", "Triggering Event", "RMI"],
     correctAnswer: "Function/Method",
   },
   {
@@ -31,22 +32,23 @@ const questionsArray = [
     answers: [
       "getElementById()",
       "getElementsByClassName()",
-      "Both A and B",
-      "None of the above",
+      "getElementsByTagName()",
+      "All of the above",
     ],
-    correctAnswer: "Both A and B",
+    correctAnswer: "All of the above",
   },
   {
     question:
       "What keyword is used to check whether a given property is valid or not?",
-    answers: ["is in", "in", "lies", "exists"],
+    answers: ["propertyIsPresent", "propertyExists", "in", "validProperty"],
     correctAnswer: "in",
   },
 ];
 
+const startButton = document.getElementById("startBtn");
 const quizContainer = document.getElementById("quiz");
 const questionElement = document.getElementById("question");
-const answerButtons = document.getElementsByClassName("answers")[0].children;
+const answerButtons = document.querySelectorAll(".answers button");
 const scoreContainer = document.getElementById("scoreContainer");
 const scoreElement = document.getElementById("score");
 const initialsForm = document.getElementById("initialsForm");
@@ -58,6 +60,8 @@ const timerElement = document.getElementById("timer");
 let currentQuestionIndex;
 let score;
 let timerId;
+
+startButton.addEventListener("click", startQuiz);
 
 function startQuiz() {
   currentQuestionIndex = 0;
@@ -93,6 +97,7 @@ function handleAnswerButtonClick() {
     timerElement.textContent = Math.max(Number(timerElement.textContent) - 10, 0);
   }
   scoreElement.textContent = score;
+  feedbackContainer.appendChild(feedbackElement);
   currentQuestionIndex++;
   if (currentQuestionIndex === questionsArray.length) {
     endQuiz();
@@ -116,4 +121,9 @@ function endQuiz() {
   showElements(scoreContainer, initialsForm, feedbackContainer);
   scoreElement.textContent = score;
   feedbackElement.textContent = "";
+  if (score === questionsArray.length) {
+    feedbackContainer.textContent = "Congratulations! You answered all questions correctly!";
+  } else {
+    feedbackContainer.textContent = `Game Over! Your final score is ${score}.`;
+  }
 }
