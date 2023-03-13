@@ -1,122 +1,129 @@
 import { questionsArray } from './questions.js';
 
-let welcomePage = document.getElementById('welcomePage')
-let questionPage = document.getElementById('questionsPage')
-let scorePage = document.getElementById('scorePage')
+const startButton = document.getElementById('start-btn');
+const nextButton = document.getElementById('next-btn');
+const questionContainer = document.getElementById('question-container');
+const questionElement = document.getElementById('question');
+const answerButtonsElement = document.getElementById('answer-buttons');
+const timerElement = document.getElementById('timer');
+const resultsContainer = document.getElementById('results-container');
+const submitButton = document.getElementById('submit-btn');
+const initialsInput = document.getElementById('initials');
 
-let questions = document.getElementById('questions')
-let answers = document.getElementById('answers')
+let shuffledQuestions, currentQuestionIndex;
+let timeLeft, timerId;
+const timeLimit = 60; // seconds
+const penalty = 10; // seconds
 
-let countdown;
-let timerEl = document.getElementById('timer')
-let time = 60;
-timerEl.textContent = 'Time Left: '+time;
-let secondsLeft;
-let questionIndex = 0;
-let numberCorrect;
-let numberIncorrect;
-let questionArrayOrder;
-
-let scoreEl = document.getElementById('score')
-let finalScore =0
-
-let inputEl = document.getElementById('inputInitials')
-
-let sectionsArray = [welcomePage, questionPage, scorePage]
-
-function hidePages(){
-    for (let i = 0; i < sectionsArray.length; i++) {
-        if(!sectionsArray[i].classList.contains('hide')){
-            sectionsArray[i].classList.add('hide')
-        }
-        
-    }
+// Load the questions from the questions.js file
+function loadQuestions() {
+  return questionsArray;
 }
 
-function questionOrder(){
-    let arrayIndex = [];
-    for (let i = 0; i < questionsArray.length; i++) {
-        arrayIndex.push(i)
-    }
-
-    return arrayIndex;
+// Start the quiz by hiding the start button and displaying the first question
+function startQuiz() {
+  shuffledQuestions = shuffle(loadQuestions());
+  currentQuestionIndex = 0;
+  timeLeft = timeLimit;
+  setNextQuestion();
+  startTimer();
+  startButton.classList.add('hide');
+  questionContainer.classList.remove('hide');
 }
 
-function startQuiz(){
-    hidePages()
-    questionPage.classList.remove('hide');
-
-    secondsLeft = time;
-
-    countdown = setInterval(() => {
-        timerEl.textContent = 'Time Left: '+ secondsLeft;
-        secondsLeft--;
-
-        if(secondsLeft < 0){
-            clearInterval(countdown)
-            secondsLeft = time;
-        }
-    }, 1000)
-    
-    questionArrayOrder = questionOrder(questionsArray)
-
-    questionDisplay(questionsArray, questionArrayOrder[questionIndex])
+// Shuffle the questions array
+function shuffle(array) {
+  return array.sort(() => Math.random() - 0.5);
 }
 
-function questionDisplay(arr, index){
-    questions.textContent = arr[index].question
-
-    let ans;
-    let but;
-    let relativeAnswers = arr[index].answersArray;
-
-    for (let i = 0; i < relativeAnswers.length; i++) {
-        ans = document.createElement('LI')
-        but = document.createElement('button')
-        
-        but.textContent = relativeAnswers[i]
-        ans.addEventListener('click', nextQuestion)
-        ans.appendChild(but)
-        answers.appendChild(ans)
-    }
-
+// Set the next question and update the answer buttons
+function setNextQuestion() {
+  resetState();
+  showQuestion(shuffledQuestions[currentQuestionIndex]);
 }
 
-function nextQuestion(event){
-    let answerChosen = event.target.textContent
-    let rightAnswer = questionsArray[questionArrayOrder[questionIndex]].correctAnswer
-
-    if( answerChosen === rightAnswer){
-        numberCorrect++
-    }else{
-        secondsLeft -= 10;
-        numberIncorrect++
+// Show the question and answer buttons
+function showQuestion(question) {
+  questionElement.innerText = question.question;
+  question.answersArray.forEach(answer => {
+    const button = document.createElement('button');
+    button.innerText = answer;
+    button.classList.add('btn');
+    if (answer === question.correctAnswer) {
+      button.dataset.correct = true;
     }
-    timerEl.textContent = 'Time Left: '+ secondsLeft;
-
-    questionIndex++;
-
-    clearPreviousQuestion()
-
-    if(questionIndex < questionsArray.length){
-        questionDisplay(questionsArray, questionArrayOrder[questionIndex])
-    }
-    else{
-        finalScore = secondsLeft;
-        scoreEl.textContent = finalScore
-        scorePage.classList.remove('hide')
-        clearInterval(countdown)
-    }
-    
+    button.addEventListener('click', selectAnswer);
+    answerButtonsElement.appendChild(button);
+  });
 }
 
-function clearPreviousQuestion(){
-    questions.textContent = '';
-    while(answers.hasChildNodes()){
-        answers.removeChild(answers.childNodes[0])
-    }
+// Reset the answer buttons to their default state
+function resetState() {
+  clearStatusClass(document.body);
+  nextButton.classList.add('hide');
+  while (answerButtonsElement.firstChild) {
+    answerButtonsElement.removeChild(answerButtonsElement.firstChild);
+  }
 }
 
-function submitInitials(){
-    console.log(inputEl.value)
+// Select an answer to the question
+function selectAnswer(e) {
+  const selectedButton = e.target;
+  const correct = selectedButton.dataset.correct;
+  setStatusClass(document.body, correct);
+  Array.from(answerButtonsElement.children).forEach(button => {
+    setStatusClass(button, button.dataset.correct);
+  });
+  if (!correct) {
+    timeLeft = Math.max(timeLeft - penalty, 0);
+    timerElement.innerText = timeLeft;
+  }
+  if (shuffledQuestions.length > currentQuestionIndex + 1) {
+    nextButton.classList.remove('hide');
+  } else {
+    clearInterval(timerId);
+    endQuiz();
+  }
 }
+
+// Set the status class for an element
+function setStatusClass(element, correct) {
+  clearStatusClass(element);
+  if (correct) {
+    element.classList.add('correct');
+  } else {
+    element.classList.add('incorrect');
+  }
+}
+
+// Clear the status class for an element
+function clearStatusClass(element) {
+  element.classList.remove('correct');
+  element.classList.remove('incorrect');
+}
+
+// Start the timer
+function startTimer() {
+  timerElement.innerText = timeLeft;
+  timerId = setInterval(() => {
+    timeLeft--;
+    timerElement.innerText = timeLeft;
+    if (timeLeft <= 0) {
+      clearInterval(timerId);
+      endQuiz();
+    }
+  }, 1000);
+}
+
+// End the quiz by hiding the question container and displaying the results container
+function endQuiz() {
+  questionContainer.classList.add('hide');
+  resultsContainer.classList.remove('hide');
+  submitButton.addEventListener('click', saveScore);
+}
+
+// Save the user's score
+localStorage.setItem('userScore', score);
+
+// Display the user's final score
+displayScore();
