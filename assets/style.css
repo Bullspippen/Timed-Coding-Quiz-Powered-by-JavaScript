@@ -1,7 +1,5 @@
+/* Global styles */
 
-/* Example to Work Off of as a Baseline */
-
-*,
 *::before,
 *::after {
   box-sizing: border-box;
@@ -26,18 +24,22 @@ body {
   padding-right: 20px;
 }
 
+/* Header styles */
+
 header {
   text-align: center;
   padding: 20px;
-  padding-top: 0px;
+  padding-top: 0;
   color: hsl(206, 17%, 28%);
 }
+
+/* Card styles */
 
 .card {
   background-color: hsl(0, 0%, 100%);
   border-radius: 5px;
   border-width: 1px;
-  box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px 0px;
+  box-shadow: rgba(0, 0, 0, 0.15) 0 2px 8px 0;
   color: hsl(206, 17%, 28%);
   font-size: 18px;
   margin: 0 auto;
@@ -46,15 +48,11 @@ header {
 }
 
 .card-header::after {
-  content: " ";
+  content: "";
   display: block;
   width: 100%;
   background: #e7e9eb;
   height: 2px;
-}
-
-.card-body {
-  min-height: 100px;
 }
 
 .card-footer {
@@ -62,7 +60,7 @@ header {
 }
 
 .card-footer::before {
-  content: " ";
+  content: "";
   display: block;
   width: 100%;
   background: #e7e9eb;
@@ -70,21 +68,22 @@ header {
 }
 
 .card-footer::after {
-  content: " ";
+  content: "";
   display: block;
   clear: both;
 }
+
+/* Button styles */
 
 .btn {
   border: none;
   background-color: hsl(360, 91%, 36%);
   border-radius: 25px;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 6px 0px rgba(0, 0, 0, 0.2) 0px 1px 1px
-    0px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0 1px 6px 0 rgba(0, 0, 0, 0.2) 0 1px 1px 0;
   color: hsl(0, 0%, 100%);
   display: inline-block;
-  font-size: 22px;
-  line-height: 22px;
+  font-size: 1.375rem;
+  line-height: 1.6;
   margin: 16px 16px 16px 20px;
   padding: 14px 34px;
   text-align: center;
@@ -96,15 +95,14 @@ button[disabled] {
   background: #c0c7cf;
 }
 
+/* Miscellaneous styles */
+
 .float-right {
   float: right;
 }
 
 #password {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  border: none;
+  border: 2px dashed #c0c7cf;
   display: block;
   width: 100%;
   padding-top: 15px;
@@ -115,29 +113,15 @@ button[disabled] {
   text-align: center;
   margin-top: 10px;
   margin-bottom: 10px;
-  border: 2px dashed #c0c7cf;
   border-radius: 6px;
   resize: none;
   overflow: hidden;
 }
 
 @media (max-width: 690px) {
+  /* Button styles for small screens */
   .btn {
     font-size: 1rem;
-    margin: 16px 0px 0px 0px;
-    padding: 10px 15px;
-  }
-
-  #password {
-    font-size: 1rem;
+    margin: 16px;
   }
 }
-
-@media (max-width: 500px) {
-  .btn {
-    font-size: 0.8rem;
-  }
-}
-
-
-.hide{display: none;}
