@@ -1,7 +1,7 @@
 const questionsArray = [
   {
     question: "Which of the following is not javascript data types?",
-    answersArray: [
+    answers: [
       "Null type",
       "Undefined type",
       "Number type",
@@ -12,7 +12,7 @@ const questionsArray = [
   {
     question:
       "Which of the following can be used to call a JavaScript Code Snippet?",
-    answersArray: [
+    answers: [
       "Function/Method",
       "Preprocessor",
       "Triggering Event",
@@ -22,13 +22,13 @@ const questionsArray = [
   },
   {
     question: "How can a datatype be declared to be a constant type?",
-    answersArray: ["var", "constant", "let", "const"],
+    answers: ["var", "constant", "let", "const"],
     correctAnswer: "const",
   },
   {
     question:
       "Which of the following methods is used to access HTML elements using Javascript?",
-    answersArray: [
+    answers: [
       "getElementById()",
       "getElementsByClassName()",
       "Both A and B",
@@ -39,121 +39,79 @@ const questionsArray = [
   {
     question:
       "What keyword is used to check whether a given property is valid or not?",
-    answersArray: ["is in", "in", "lies", "exists"],
+    answers: ["is in", "in", "lies", "exists"],
     correctAnswer: "in",
   },
 ];
 
 const quizContainer = document.getElementById("quiz");
 const questionElement = document.getElementById("question");
-const answerButtons = document.querySelectorAll(".answers button");
+const answerButtons = document.getElementsByClassName("answers")[0].children;
 const scoreContainer = document.getElementById("scoreContainer");
 const scoreElement = document.getElementById("score");
 const initialsForm = document.getElementById("initialsForm");
 const initialsInput = document.getElementById("initials");
+const feedbackContainer = document.getElementById("feedbackContainer");
 const feedbackElement = document.getElementById("feedback");
 const timerElement = document.getElementById("timer");
-const timerContainer = document.getElementById("timerContainer");
 
-let currentQuestionIndex = 0;
-let score = 0;
-let timeLeft = 60;
+let currentQuestionIndex;
+let score;
 let timerId;
 
 function startQuiz() {
-  // hide start button
-  const startButton = document.getElementById("startBtn");
-  startButton.classList.add("hide");
-
-  // show quiz container
-  quizContainer.classList.remove("hide");
-
-  // start timer
+  currentQuestionIndex = 0;
+  score = 0;
+  timerElement.textContent = 60;
+  scoreElement.textContent = score;
+  feedbackElement.textContent = "";
+  initialsInput.value = "";
+  hideElements(scoreContainer, initialsForm, feedbackContainer);
+  showElements(quizContainer, timerElement);
+  setQuestion();
   startTimer();
+}
 
-  // display first question
-  displayNextQuestion();
+function setQuestion() {
+  const currentQuestion = questionsArray[currentQuestionIndex];
+  questionElement.textContent = currentQuestion.question;
+  for (let i = 0; i < currentQuestion.answers.length; i++) {
+    answerButtons[i].textContent = currentQuestion.answers[i];
+    answerButtons[i].addEventListener("click", handleAnswerButtonClick);
+  }
+}
+
+function handleAnswerButtonClick() {
+  const currentQuestion = questionsArray[currentQuestionIndex];
+  const selectedAnswer = this.textContent;
+  if (selectedAnswer === currentQuestion.correctAnswer) {
+    score++;
+    feedbackElement.textContent = "Correct!";
+  } else {
+    feedbackElement.textContent = "Wrong!";
+    timerElement.textContent = Math.max(Number(timerElement.textContent) - 10, 0);
+  }
+  scoreElement.textContent = score;
+  currentQuestionIndex++;
+  if (currentQuestionIndex === questionsArray.length) {
+    endQuiz();
+  } else {
+    setQuestion();
+  }
 }
 
 function startTimer() {
   timerId = setInterval(() => {
-    timeLeft--;
-    timerElement.textContent = timeLeft;
-
-    if (timeLeft === 0) {
+    timerElement.textContent = Math.max(Number(timerElement.textContent) - 1, 0);
+    if (timerElement.textContent === "0") {
       endQuiz();
     }
   }, 1000);
 }
 
-function displayNextQuestion() {
-  const currentQuestion = questionsArray[currentQuestionIndex];
-  questionElement.textContent = currentQuestion.question;
-
-  for (let i = 0; i < answerButtons.length; i++) {
-    answerButtons[i].textContent = currentQuestion.answersArray[i];
-    answerButtons[i].addEventListener("click", checkAnswer);
-  }
-}
-
-function checkAnswer() {
-  const selectedAnswer = this.textContent;
-  const currentQuestion = questionsArray[currentQuestionIndex];
-  const isCorrect = selectedAnswer === currentQuestion.correctAnswer;
-
-  if (isCorrect) {
-    score++;
-    feedbackElement.textContent = "Correct!";
-  } else {
-    timeLeft -= 10;
-    feedbackElement.textContent = "Wrong!";
-  }
-
-  currentQuestionIndex++;
-
-  if (currentQuestionIndex === questionsArray.length) {
-    endQuiz();
-  } else {
-    displayNextQuestion();
-  }
-}
-
 function endQuiz() {
-  // stop timer
   clearInterval(timerId);
-
-  // hide quiz container
-  quizContainer.classList.add("hide");
-
-  // show score container
-  scoreContainer.classList.remove("hide");
-
-  // display score
+  hideElements(quizContainer, timerElement);
+  showElements(scoreContainer, initialsForm, feedbackContainer);
   scoreElement.textContent = score;
-}
-
-function saveScore(e) {
-  e.preventDefault();
-
-  const initials = initialsInput.value.trim();
-  if (typeof initials !== "string") {
-    feedbackElement.textContent =
-      "Please enter a valid string for your initials.";
-    return;
-  }
-
-  const highScores = JSON.parse(localStorage.getItem("highScores")) || [];
-
-  const newScore = {
-    initials: initials.toUpperCase(),
-    score: score,
-  };
-
-  highScores.push(newScore);
-  highScores.sort((a, b) => b.score - a.score);
-  highScores.splice(5);
-
-  localStorage.setItem("highScores", JSON.stringify(highScores));
-
-  window.location.assign("./highscores.html");
 }
