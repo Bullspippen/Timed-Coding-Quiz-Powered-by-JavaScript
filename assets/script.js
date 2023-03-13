@@ -77,6 +77,7 @@ function setQuestion() {
   questionElement.textContent = currentQuestion.question;
   for (let i = 0; i < currentQuestion.answers.length; i++) {
     answerButtons[i].textContent = currentQuestion.answers[i];
+    answerButtons[i].removeEventListener("click", handleAnswerButtonClick);
     answerButtons[i].addEventListener("click", handleAnswerButtonClick);
   }
 }
@@ -114,4 +115,5 @@ function endQuiz() {
   hideElements(quizContainer, timerElement);
   showElements(scoreContainer, initialsForm, feedbackContainer);
   scoreElement.textContent = score;
+  feedbackElement.textContent = "";
 }
