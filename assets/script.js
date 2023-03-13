@@ -1,129 +1,159 @@
-import { questionsArray } from './assets/questions.js';
+const questionsArray = [
+  {
+    question: "Which of the following is not javascript data types?",
+    answersArray: [
+      "Null type",
+      "Undefined type",
+      "Number type",
+      "All of the above",
+    ],
+    correctAnswer: "All of the above",
+  },
+  {
+    question:
+      "Which of the following can be used to call a JavaScript Code Snippet?",
+    answersArray: [
+      "Function/Method",
+      "Preprocessor",
+      "Triggering Event",
+      "RMI",
+    ],
+    correctAnswer: "Function/Method",
+  },
+  {
+    question: "How can a datatype be declared to be a constant type?",
+    answersArray: ["var", "constant", "let", "const"],
+    correctAnswer: "const",
+  },
+  {
+    question:
+      "Which of the following methods is used to access HTML elements using Javascript?",
+    answersArray: [
+      "getElementById()",
+      "getElementsByClassName()",
+      "Both A and B",
+      "None of the above",
+    ],
+    correctAnswer: "Both A and B",
+  },
+  {
+    question:
+      "What keyword is used to check whether a given property is valid or not?",
+    answersArray: ["is in", "in", "lies", "exists"],
+    correctAnswer: "in",
+  },
+];
 
-const startButton = document.getElementById('start-btn');
-const nextButton = document.getElementById('next-btn');
-const questionContainer = document.getElementById('question-container');
-const questionElement = document.getElementById('question');
-const answerButtonsElement = document.getElementById('answer-buttons');
-const timerElement = document.getElementById('timer');
-const resultsContainer = document.getElementById('results-container');
-const submitButton = document.getElementById('submit-btn');
-const initialsInput = document.getElementById('initials');
+const quizContainer = document.getElementById("quiz");
+const questionElement = document.getElementById("question");
+const answerButtons = document.querySelectorAll(".answers button");
+const scoreContainer = document.getElementById("scoreContainer");
+const scoreElement = document.getElementById("score");
+const initialsForm = document.getElementById("initialsForm");
+const initialsInput = document.getElementById("initials");
+const feedbackElement = document.getElementById("feedback");
+const timerElement = document.getElementById("timer");
+const timerContainer = document.getElementById("timerContainer");
 
-let shuffledQuestions, currentQuestionIndex;
-let timeLeft, timerId;
-const timeLimit = 60; // seconds
-const penalty = 10; // seconds
+let currentQuestionIndex = 0;
+let score = 0;
+let timeLeft = 60;
+let timerId;
 
-// Load the questions from the questions.js file
-function loadQuestions() {
-  return questionsArray;
-}
-
-// Start the quiz by hiding the start button and displaying the first question
 function startQuiz() {
-  shuffledQuestions = shuffle(loadQuestions());
-  currentQuestionIndex = 0;
-  timeLeft = timeLimit;
-  setNextQuestion();
+  // hide start button
+  const startButton = document.getElementById("startBtn");
+  startButton.classList.add("hide");
+
+  // show quiz container
+  quizContainer.classList.remove("hide");
+
+  // start timer
   startTimer();
-  startButton.classList.add('hide');
-  questionContainer.classList.remove('hide');
+
+  // display first question
+  displayNextQuestion();
 }
 
-// Shuffle the questions array
-function shuffle(array) {
-  return array.sort(() => Math.random() - 0.5);
-}
-
-// Set the next question and update the answer buttons
-function setNextQuestion() {
-  resetState();
-  showQuestion(shuffledQuestions[currentQuestionIndex]);
-}
-
-// Show the question and answer buttons
-function showQuestion(question) {
-  questionElement.innerText = question.question;
-  question.answersArray.forEach(answer => {
-    const button = document.createElement('button');
-    button.innerText = answer;
-    button.classList.add('btn');
-    if (answer === question.correctAnswer) {
-      button.dataset.correct = true;
-    }
-    button.addEventListener('click', selectAnswer);
-    answerButtonsElement.appendChild(button);
-  });
-}
-
-// Reset the answer buttons to their default state
-function resetState() {
-  clearStatusClass(document.body);
-  nextButton.classList.add('hide');
-  while (answerButtonsElement.firstChild) {
-    answerButtonsElement.removeChild(answerButtonsElement.firstChild);
-  }
-}
-
-// Select an answer to the question
-function selectAnswer(e) {
-  const selectedButton = e.target;
-  const correct = selectedButton.dataset.correct;
-  setStatusClass(document.body, correct);
-  Array.from(answerButtonsElement.children).forEach(button => {
-    setStatusClass(button, button.dataset.correct);
-  });
-  if (!correct) {
-    timeLeft = Math.max(timeLeft - penalty, 0);
-    timerElement.innerText = timeLeft;
-  }
-  if (shuffledQuestions.length > currentQuestionIndex + 1) {
-    nextButton.classList.remove('hide');
-  } else {
-    clearInterval(timerId);
-    endQuiz();
-  }
-}
-
-// Set the status class for an element
-function setStatusClass(element, correct) {
-  clearStatusClass(element);
-  if (correct) {
-    element.classList.add('correct');
-  } else {
-    element.classList.add('incorrect');
-  }
-}
-
-// Clear the status class for an element
-function clearStatusClass(element) {
-  element.classList.remove('correct');
-  element.classList.remove('incorrect');
-}
-
-// Start the timer
 function startTimer() {
-  timerElement.innerText = timeLeft;
   timerId = setInterval(() => {
     timeLeft--;
-    timerElement.innerText = timeLeft;
-    if (timeLeft <= 0) {
-      clearInterval(timerId);
+    timerElement.textContent = timeLeft;
+
+    if (timeLeft === 0) {
       endQuiz();
     }
   }, 1000);
 }
 
-// End the quiz by hiding the question container and displaying the results container
-function endQuiz() {
-  questionContainer.classList.add('hide');
-  resultsContainer.classList.remove('hide');
-  submitButton.addEventListener('click', saveScore);
+function displayNextQuestion() {
+  const currentQuestion = questionsArray[currentQuestionIndex];
+  questionElement.textContent = currentQuestion.question;
+
+  for (let i = 0; i < answerButtons.length; i++) {
+    answerButtons[i].textContent = currentQuestion.answersArray[i];
+    answerButtons[i].addEventListener("click", checkAnswer);
+  }
 }
 
-// Save the user's score
-localStorage.setItem('userScore', score);
+function checkAnswer() {
+  const selectedAnswer = this.textContent;
+  const currentQuestion = questionsArray[currentQuestionIndex];
+  const isCorrect = selectedAnswer === currentQuestion.correctAnswer;
 
-// Display the user's final score
-displayScore();
+  if (isCorrect) {
+    score++;
+    feedbackElement.textContent = "Correct!";
+  } else {
+    timeLeft -= 10;
+    feedbackElement.textContent = "Wrong!";
+  }
+
+  currentQuestionIndex++;
+
+  if (currentQuestionIndex === questionsArray.length) {
+    endQuiz();
+  } else {
+    displayNextQuestion();
+  }
+}
+
+function endQuiz() {
+  // stop timer
+  clearInterval(timerId);
+
+  // hide quiz container
+  quizContainer.classList.add("hide");
+
+  // show score container
+  scoreContainer.classList.remove("hide");
+
+  // display score
+  scoreElement.textContent = score;
+}
+
+function saveScore(e) {
+  e.preventDefault();
+
+  const initials = initialsInput.value.trim();
+  if (typeof initials !== "string") {
+    feedbackElement.textContent =
+      "Please enter a valid string for your initials.";
+    return;
+  }
+
+  const highScores = JSON.parse(localStorage.getItem("highScores")) || [];
+
+  const newScore = {
+    initials: initials.toUpperCase(),
+    score: score,
+  };
+
+  highScores.push(newScore);
+  highScores.sort((a, b) => b.score - a.score);
+  highScores.splice(5);
+
+  localStorage.setItem("highScores", JSON.stringify(highScores));
+
+  window.location.assign("./highscores.html");
+}
