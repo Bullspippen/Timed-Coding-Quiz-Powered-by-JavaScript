@@ -2,42 +2,39 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=w, initial-scale=1.0">
-    <link rel="stylesheet" href="./assets/style.css"/>
-    <title>Timed Code Quiz</title>
-
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Quiz</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Timed Quiz Game</h1>
-    <div id="timed-quiz-container">
-        <div id="timer"></div>
-            
-        <section id="welcomePage">
-
-            <div class="start_btn">
-                <button onclick="startQuiz()">Start Quiz</button>
+    <div class="container">
+        <h1>JavaScript Quiz</h1>
+        <div id="quiz">
+            <h2 id="question"></h2>
+            <div class="answers">
+                <button id="btn0"></button>
+                <button id="btn1"></button>
+                <button id="btn2"></button>
+                <button id="btn3"></button>
             </div>
-        </section>
-
-        <section id="questionsPage" class="hide">
-            <h2 id="questions"></h2>
-            <ul id="answers"></ul>
-        </section>
-
-        <section id="scorePage" class="hide">
-            <div>Game Over!</div>
-            <div>Your Final Score Is: <span id="score"></span></div>
-
-            <div>Please Enter Your Initials</div>
-            <input type="text" id="inputInitials" />
-            <button onclick="submitInitials()">Submit</button>
-        </section>
-
+        </div>
+        <div id="scoreContainer">
+            <p>Your score: <span id="score"></span></p>
+        </div>
+        <form id="initialsForm">
+            <label for="initials">Enter your initials:</label>
+            <input type="text" id="initials" name="initials" maxlength="3">
+            <button type="submit" id="submitBtn">Submit</button>
+        </form>
+        <div id="timerContainer">
+            <p>Time Left: <span id="timer"></span></p>
+        </div>
+        <div id="feedbackContainer">
+            <p id="feedback"></p>
+        </div>
     </div>
 
-    <div></div>
-    <script src="./assets/script.js"></script>
+    <script type="module" src="script.js"></script>
+    <script type="module" src="questions.js"></script>
 </body>
 </html>

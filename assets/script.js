@@ -1,4 +1,4 @@
-import { questionsArray } from './questions.js';
+import { questionsArray } from './assets/questions.js';
 
 const startButton = document.getElementById('start-btn');
 const nextButton = document.getElementById('next-btn');
